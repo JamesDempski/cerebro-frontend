@@ -23,6 +23,7 @@ import java.util.Arrays;
 
 public class App extends JFrame implements ActionListener
 {
+	/*
 	static JFrame loginframe;
 	static JLabel loginunamelabel;
 	static JTextField loginunamefield;
@@ -52,11 +53,13 @@ public class App extends JFrame implements ActionListener
 	static String password;
 	static String confirmpassword;
 	static String email;
+	static UserSession user = new UserSession();
 	
 	//static String regex = "^(?=.*[0-9])" + "(?=.*[a-z])(?=.*[A-Z])" + "(?=.*[@#$%^&+=])" + "(?=\\S+$).{8,20}$";
 	
     public static void main( String[] args )
     {
+    	/*
     	try {
     		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         }
@@ -70,6 +73,10 @@ public class App extends JFrame implements ActionListener
     	loginregisterbutton.addActionListener(a);
     	hofstrabutton.addActionListener(a);
     	regsubmitbutton.addActionListener(a);
+    	*/
+    	/*
+    	user.registerUser("badstudent1234@gmail.com", "abc123", "Childhood pet?", "Cat");
+    	System.out.println(user.response.get("message"));
     }
     
     public void showGroupLayout() {
@@ -208,8 +215,9 @@ public class App extends JFrame implements ActionListener
     	regframe.setVisible(false);
     	
     }
-
+	*/
 	public void actionPerformed(ActionEvent e) {
+		/*
 		String s = e.getActionCommand();
 		if(s.equals("login")) {
 			if(loginunamefield.getText().equals(username)&&loginpwdfield.getText().equals(password)) {
@@ -285,5 +293,99 @@ public class App extends JFrame implements ActionListener
 			webpassword.sendKeys("Ardwick1738!");
 			weblogin.click();
 		}
+		*/
 	}
+	public static void main( String[] args )
+    {
+		//----------------------Demo--------------------------------------------
+		UserSession session = new UserSession();
+		
+		//Register
+		/*
+		if(session.registerUser("badstudent23@gmail.com", "password", "Have you tested this?", "Obviously not!")) {
+			System.out.println("Successful registration");
+		}else {
+			System.out.println("Registration failed");
+			System.out.println(session.response.get("message"));
+		}
+		*/
+	
+		//Login
+		/*
+		if(session.loginUser("badstudent23@gmail.com", "password!")) {
+			System.out.println("Login successful");
+		}else {
+			System.out.println("Login failed");
+			System.out.println(session.response.get("message"));
+		}
+		*/
+		
+		//Adding website
+		/*
+		HashMap<String, String> creds = new HashMap<String, String>();
+		creds.put("username", "badstudent");
+		creds.put("password", "password1");
+		
+		if(session.createUserWebsite("1", creds)) {
+			System.out.println("Success");
+		}else {
+			System.out.println("Failure");
+		}
+		*/
+		
+		//Retreiving Websites
+		/*
+		if(session.getUserWebsites()) {
+			System.out.println("Sites retreived");
+		}else {
+			System.out.println("Failed miserably");
+		}
+		websiteEntry entry = session.userWebsites.get("Hofstra Portal");
+		System.out.println(entry.websiteCredentials);
+		*/
+		
+		/*
+		//Updating Website
+		entry.websiteCredentials.put("password", "password2");
+		session.updateWebsiteCredentials(entry);
+		
+		if(session.getUserWebsites()) {
+			System.out.println("Updated sites retreived");
+		}else {
+			System.out.println("Failed miserably 2");
+		}
+		
+		entry = session.userWebsites.get("Hofstra Portal");
+		System.out.println(entry.websiteCredentials);
+		*/
+		
+		//Update Superpassword
+		
+		//session.updateSuperpassword("password!");
+		
+		
+		//Delete website entry
+		/*
+		if(session.deleteWebsiteEntry(entry)) {
+			System.out.println("Successfully deleted website");
+		}else {
+			System.out.println("Falied at the last function");
+		}
+		*/
+    }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
