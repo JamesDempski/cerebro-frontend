@@ -4,10 +4,13 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bouncycastle.util.encoders.Hex;
 import org.json.JSONObject;
@@ -21,7 +24,7 @@ public class UserSession {
 	
 	class websiteEntry{
 		public String credential_id;
-		private String website_id;
+		public String website_id;
 		public HashMap<String, String> websiteCredentials;
 		public String websiteName;
 		public String websiteUrl;
@@ -47,6 +50,10 @@ public class UserSession {
 		username = null;
 	}
 	
+	private boolean isSignedIn() {
+		return user_id != null;
+	}
+	
 	public boolean loginUser(String username, String password) {
 		HashMap<String, String> params = new HashMap<String, String>();
 		AppRequests request = new AppRequests();
@@ -59,6 +66,7 @@ public class UserSession {
 			// TODO Auto-generated catch block
 			System.out.println("Unable to hash password");
 			e1.printStackTrace();
+			return false;
 		}
     	byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
     	String sha256hex = new String(Hex.encode(hash));
@@ -70,12 +78,16 @@ public class UserSession {
 		} catch (IOException e) {
 			System.out.println("Error logging in user");
 			e.printStackTrace();
+			return false;
 		}
     	
     	if(response.get("code").equals("200")) {
     		user_id = response.get("user_id");
     		this.username = username;
     		userPassword = password;
+    		if(!getUserWebsites()) {
+    			System.out.println("Unable to retrieve website credentials");
+    		}
     		return true;
     	}else {
     		//response.get("message") will hold the error message
@@ -92,21 +104,26 @@ public class UserSession {
 		} catch (NoSuchAlgorithmException e1) {
 			System.out.println("Unable to hash password");
 			e1.printStackTrace();
+			return false;
 		}
 		
 		byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
-    	String sha256hex = new String(Hex.encode(hash));
+    	String sha256pwhex = new String(Hex.encode(hash));
+    	
+    	hash = digest.digest(security_answer.getBytes(StandardCharsets.UTF_8));
+    	String sha256qhex = new String(Hex.encode(hash));
     	
     	params.put("username", username);
-    	params.put("public_key", sha256hex);
+    	params.put("public_key", sha256pwhex);
     	params.put("security_question", security_question);
-    	params.put("security_answer", security_answer);
+    	params.put("security_answer", sha256qhex);
     	
     	try {
 			response = request.sendRequest("users/createUser.php", params);
 		} catch (IOException e) {
 			System.out.println("Error logging in user");
 			e.printStackTrace();
+			return false;
 		}
     	
     	if(response.get("code").equals("200")) {
@@ -118,6 +135,10 @@ public class UserSession {
 	}
 	
 	public boolean createUserWebsite(String website_id, HashMap<String, String> credentials) {
+		if(!isSignedIn()) {
+			System.out.println("User not signed in");
+			return false;
+		}
 		HashMap<String, String> params = new HashMap<String, String>();
 		AppRequests request = new AppRequests();
 		AppAES encryptor = new AppAES(userPassword);
@@ -139,6 +160,7 @@ public class UserSession {
 		} catch (IOException e) {
 			System.out.println("Error getting user websites");
 			e.printStackTrace();
+			return false;
 		}
     	
     	if(response.get("code").equals("200")) {
@@ -149,6 +171,10 @@ public class UserSession {
 	}
 	
 	public boolean getUserWebsites() {
+		if(!isSignedIn()) {
+			System.out.println("User not signed in");
+			return false;
+		}
 		HashMap<String, String> params = new HashMap<String, String>();
 		AppRequests request = new AppRequests();
     	AppAES decryptor = new AppAES(userPassword);
@@ -161,6 +187,7 @@ public class UserSession {
 		} catch (IOException e) {
 			System.out.println("Error getting user websites");
 			e.printStackTrace();
+			return false;
 		}
     	
     	if(!response.get("code").equals("200")) {
@@ -175,6 +202,7 @@ public class UserSession {
 			// TODO Auto-generated catch block
 			System.out.println("JSON parsing error for user websites");
 			e.printStackTrace();
+			return false;
 		}
     	
     	for(String entry:entries) {
@@ -222,6 +250,10 @@ public class UserSession {
 	}
 	
 	public boolean updateWebsiteCredentials(websiteEntry updatedEntry) {
+		if(!isSignedIn()) {
+			System.out.println("User not signed in");
+			return false;
+		}
 		HashMap<String, String> params = new HashMap<String, String>();
 		AppRequests request = new AppRequests();
 		AppAES encryptor = new AppAES(userPassword);
@@ -249,6 +281,11 @@ public class UserSession {
 	}
 	
 	public boolean deleteWebsiteEntry(websiteEntry entryToDelete) {
+		if(!isSignedIn()) {
+			System.out.println("User not signed in");
+			return false;
+		}
+		
 		HashMap<String, String> params = new HashMap<String, String>();
 		AppRequests request = new AppRequests();
 		
@@ -270,6 +307,10 @@ public class UserSession {
 	}
 	
 	public boolean updateSuperpassword(String newPassword) {
+		if(!isSignedIn()) {
+			System.out.println("User not signed in");
+			return false;
+		}
 		HashMap<String, String> params = new HashMap<String, String>();
 		AppRequests request = new AppRequests();
 		AppAES newEncryptor = new AppAES(newPassword);
@@ -330,5 +371,96 @@ public class UserSession {
 		}
 		
 		return false;
+	}
+	
+	public static String generatePassword(int length, String specialCharslist) {
+		final String upcase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		final String lowcase = "abcdefghijklmnopqrstuvwxyz";
+		final String nums = "0123456789";
+		
+		String specialchars = "";
+		if(specialCharslist.length()>0) {
+			for(int i = 0; i < specialCharslist.length(); i++) {
+				if(specialCharslist.charAt(i) == '^' || specialCharslist.charAt(i) == '-') {
+					specialchars+="\\";
+				}
+				specialchars+=specialCharslist.charAt(i);
+			}
+		}else {
+			specialchars = "!?@#$%&*()_+=\\^\\-"; //normal chars: !?@#$%&*()+_=, notnormal: ^-
+		}
+		
+		String pwdchars = upcase + lowcase + nums + specialchars;
+		String genpwd = "";
+		String regex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[" + specialchars + "]).*$";
+		Pattern p = Pattern.compile(regex);
+		Matcher m = p.matcher(genpwd);
+		
+		while(!m.matches()) {
+			SecureRandom randomgen = new SecureRandom();
+			genpwd = "";
+			for(int i=0; i < length; i++) {
+				int randomIndex = randomgen.nextInt(pwdchars.length());
+				genpwd+=pwdchars.charAt(randomIndex);
+			}
+			//System.out.println(genpwd);
+			m = p.matcher(genpwd);
+		}
+		
+		return genpwd;
+	}
+	
+	public static HashMap<String, String> getSupportedWebsites(){
+
+		AppRequests request = new AppRequests();
+    	HashMap<String, String> response = new HashMap<String, String>();
+    	HashMap<String, String> params = new HashMap<String, String>();
+    	params.put("test", "test");
+    	try {
+			response = request.sendRequest("websites/getSupportedWebsites.php", params);
+		} catch (IOException e) {
+			System.out.println("Error getting supported websites");
+			e.printStackTrace();
+			return null;
+		}
+    	
+    	if(!response.get("code").equals("200")) {
+    		return null;
+    	}
+    	
+    	ObjectMapper mapper = new ObjectMapper();
+    	String[] entries = null;
+    	try {
+			entries = mapper.readValue(response.get("supported_websites"), new TypeReference<String[]>() {});
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("JSON parsing error for user websites");
+			e.printStackTrace();
+			return null;
+		}
+    	HashMap<String, String> output = new HashMap<String, String>();
+    	for(String entry:entries) {
+    		HashMap<String, String> entryMap = null;
+    		try {
+				entryMap = mapper.readValue(entry, new TypeReference<HashMap<String, String>>() {});
+			} catch (JsonParseException e) {
+				// TODO Auto-generated catch block
+				System.out.println("JSON parsing error for user websites");
+				e.printStackTrace();
+				return null;
+			} catch (JsonMappingException e) {
+				// TODO Auto-generated catch block
+				System.out.println("JSON mapping error for user websites");
+				e.printStackTrace();
+				return null;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				System.out.println("JSON parsing IO exception error for user websites");
+				e.printStackTrace();
+				return null;
+			}
+    		output.put(entryMap.get("website_name"), entryMap.get("website_id"));	
+    	}
+		return output;
 	}
 }
