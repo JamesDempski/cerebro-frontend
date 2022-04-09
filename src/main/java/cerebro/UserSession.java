@@ -51,7 +51,7 @@ public class UserSession {
 	}
 	
 	private boolean isSignedIn() {
-		return user_id != null;
+		return (user_id != null && userPassword != null);
 	}
 	
 	public boolean loginUser(String username, String password) {
@@ -307,8 +307,8 @@ public class UserSession {
 	}
 	
 	public boolean updateSuperpassword(String newPassword) {
-		if(!isSignedIn()) {
-			System.out.println("User not signed in");
+		if(user_id == null) {
+			System.out.println("Missing user id");
 			return false;
 		}
 		HashMap<String, String> params = new HashMap<String, String>();
@@ -462,5 +462,68 @@ public class UserSession {
     		output.put(entryMap.get("website_name"), entryMap.get("website_id"));	
     	}
 		return output;
+	}
+	
+	public void logoutUser() {
+		user_id = null;
+		userPassword = null;
+		userWebsites = new HashMap<String, websiteEntry>();
+		response = new HashMap<String, String>();
+		username = null;
+	}
+	
+	public String getSecurityQuestion(String username) {
+		
+		HashMap<String, String> params = new HashMap<String, String>();
+		AppRequests request = new AppRequests();
+		
+		params.put("username", username);
+		
+		try {
+			response = request.sendRequest("users/getSecurityQuestion.php", params);
+		} catch (IOException e) {
+			System.out.println("Error getting user security question");
+			e.printStackTrace();
+			return null;
+		}
+		
+		if(response.get("code").equals("200")) {
+			return response.get("security_question");
+		}
+		return null;
+	}
+	
+	public boolean verifySecurityAnswer(String username, String answer) {
+		HashMap<String, String> params = new HashMap<String, String>();
+		AppRequests request = new AppRequests();
+	
+	
+		MessageDigest digest = null;
+		try {
+			digest = MessageDigest.getInstance("SHA-256");
+		} catch (NoSuchAlgorithmException e1) {
+			// TODO Auto-generated catch block
+			System.out.println("Unable to hash password");
+			e1.printStackTrace();
+			return false;
+		}
+		byte[] hash = digest.digest(answer.getBytes(StandardCharsets.UTF_8));
+		String sha256hex = new String(Hex.encode(hash));
+	
+		params.put("username", username);
+		params.put("security_answer_hash", sha256hex);
+		try {
+			response = request.sendRequest("users/verifySecurityAnswer.php", params);
+		} catch (IOException e) {
+			System.out.println("Error logging in user");
+			e.printStackTrace();
+			return false;
+		}
+		if(response.get("code").equals("200")) {
+    		user_id = response.get("user_id");
+    		return true;
+    	}
+		
+		return false;
 	}
 }
