@@ -4,10 +4,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-
 import cerebro.UserSession.websiteEntry;
 import okhttp3.Response;
-
 import org.openqa.selenium.WebElement;
 import javax.swing.*;
 import java.awt.event.*;
@@ -15,11 +13,12 @@ import java.awt.*;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.regex.*;
+import java.awt.datatransfer.StringSelection;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
 
 public class App extends JFrame implements ActionListener, ItemListener
 {
-	//login variables
-	//add login label up top
 	static JFrame loginframe;
 	static JLabel loginemaillabel;
 	static JTextField loginemailfield;
@@ -31,13 +30,9 @@ public class App extends JFrame implements ActionListener, ItemListener
 	static int loginincorrectcount = 0;
 	
 	
-	
-	//home page variables
-	//add home label up top
 	static JFrame homeframe;
 	static JButton genpwdbutton;
 	static JButton addnewsitesbutton;
-	//static JButton advancedbutton;
 	static JButton logoutbutton;
 	static String websiteslistarr[] = {};
 	static JComboBox websiteslist;
@@ -47,9 +42,6 @@ public class App extends JFrame implements ActionListener, ItemListener
 	static JLabel homespacinglabel;
 	
 	
-	
-	//generate password page variables
-	//add label up top
 	static JFrame genframe;
 	static JLabel genlenlabel;
 	static JTextField genlenfield;
@@ -118,13 +110,21 @@ public class App extends JFrame implements ActionListener, ItemListener
 	//recovery page variables
 	//label up top
 	static JFrame recovframe;
-	static JLabel recovquestionlabel;    //CHANGE THESE TO NEW RECOVERY SCHEME
+	static JLabel recovquestionlabel;
 	static JTextField recovquestionfield;
 	//static JButton recovgenbutton;
 	//static JLabel recovtokenlabel;
 	//static JTextField recovtokenfield;
 	static JButton recovsubmitbutton;
 	static JLabel recovpasswordlabel;
+	
+	
+	static JFrame resetframe;
+	static JLabel resetpwdlabel;
+	static JTextField resetpwdfield;
+	static JLabel resetconfirmpwdlabel;
+	static JTextField resetconfirmpwdfield;
+	static JButton resetpwdbutton;
 	
 	
 	
@@ -163,7 +163,9 @@ public class App extends JFrame implements ActionListener, ItemListener
     	websavebutton.addActionListener(a);
     	//advsavebutton.addActionListener(a);
     	//recovgenbutton.addActionListener(a);
-    	//recovsubmitbutton.addActionListener(a);
+    	recovsubmitbutton.addActionListener(a);
+    	resetpwdbutton.addActionListener(a);
+    	
     	regquestionlist.addItemListener(a);
     	websiteslist.addItemListener(a);
     	websuppwebsiteslist.addItemListener(a);
@@ -172,7 +174,7 @@ public class App extends JFrame implements ActionListener, ItemListener
     	
     	
     	
-    	user.loginUser("jamie.dempski@hofstra.edu", "Hofstra1!");
+    	//user.loginUser("jamie.dempski@hofstra.edu", "Hofstra1!");
     	//HashMap<String,String> creds = new HashMap<String,String>();
     	//creds.put("username", "");
     	//creds.put("password", "");
@@ -196,7 +198,7 @@ public class App extends JFrame implements ActionListener, ItemListener
     	regframe.setSize(600,400);
     	regframe.setLayout(new GridLayout(2,4));
     	genframe = new JFrame();
-    	genframe.setSize(600,400);
+    	genframe.setSize(550,300);
     	genframe.setLayout(new GridLayout(2,3));
     	webframe = new JFrame();
     	webframe.setSize(600,400);
@@ -204,6 +206,9 @@ public class App extends JFrame implements ActionListener, ItemListener
     	recovframe = new JFrame();
     	recovframe.setSize(600,400);
     	recovframe.setLayout(new GridLayout(2,2));
+    	resetframe = new JFrame();
+    	resetframe.setSize(600,400);
+    	resetframe.setLayout(new GridLayout(2,2));
     	
     	
     	
@@ -342,7 +347,7 @@ public class App extends JFrame implements ActionListener, ItemListener
     	//genupperfield = new JTextField(32);
     	//genlowerlabel = new JLabel("Min. Number of Lowercase");
     	//genlowerfield = new JTextField(32);
-    	genspeciallabel = new JLabel("<html>List of Permitted Special Characters<br/> Ex. !@#$%^&*()</html>");
+    	genspeciallabel = new JLabel("<html>List of Permitted Special Characters<br/> Ex. !@#$%^&*()<br/> Leave this field blank to generate password <br/> with default special characters</html>");
     	genspecialfield = new JTextField(32);
     	generatebutton = new JButton("Generate");
     	genpwdfield = new JTextField(32);
@@ -493,6 +498,57 @@ public class App extends JFrame implements ActionListener, ItemListener
     	//recovframe ends here
     	
     	
+    	
+    	//resetframe starts here
+    	JPanel resetmainpanel = new JPanel();
+    	resetframe.add(resetmainpanel);
+    	JPanel resetcontrolpanel = new JPanel();
+    	GroupLayout resetlayout = new GroupLayout(resetcontrolpanel);
+    	resetlayout.setAutoCreateGaps(true);
+    	resetlayout.setAutoCreateContainerGaps(true);
+    	
+    	
+    	
+		resetpwdlabel = new JLabel("Password"); 
+		resetpwdfield = new JTextField(32);
+		resetconfirmpwdlabel = new JLabel("Confirm Password");
+		resetconfirmpwdfield = new JTextField(32);
+		resetpwdbutton = new JButton("Update Password");
+		
+    	
+    	resetlayout.setHorizontalGroup(resetlayout.createSequentialGroup()
+    			.addGroup(resetlayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+    					.addComponent(resetpwdlabel)
+    					.addComponent(resetconfirmpwdlabel)
+    					
+    			)
+    			.addGroup(resetlayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+    					.addComponent(resetpwdfield)
+    					.addComponent(resetconfirmpwdfield)	
+    					.addComponent(resetpwdbutton)
+    			)
+    	);
+    	
+    	resetlayout.setVerticalGroup(resetlayout.createSequentialGroup()
+    			.addGroup(resetlayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+    					.addComponent(resetpwdlabel)
+    					.addComponent(resetpwdfield)
+    			)
+    			.addGroup(resetlayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+    					.addComponent(resetconfirmpwdlabel)
+    					.addComponent(resetconfirmpwdfield)
+    			)
+    			.addGroup(resetlayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+    					.addComponent(resetpwdbutton)
+    			)
+    	); 
+    	resetcontrolpanel.setLayout(resetlayout);
+    	resetmainpanel.add(resetcontrolpanel);
+    	resetframe.add(resetmainpanel);
+    	resetframe.setVisible(false);  
+    	//resetframe ends here
+    	
+    	
     	//registerframe starts here
     	JPanel regmainpanel = new JPanel();
     	regframe.add(regmainpanel);
@@ -561,18 +617,126 @@ public class App extends JFrame implements ActionListener, ItemListener
 			for(String str:user.userWebsites.keySet()) {
 				websiteslist.addItem(str);
 			}
-			loginframe.setVisible(false);
+			//loginframe.setVisible(false);
 			homeframe.setVisible(true);
-			regframe.setVisible(false);
-			genframe.setVisible(false);
-			webframe.setVisible(false);
+			//regframe.setVisible(false);
+			//genframe.setVisible(false);
+			//webframe.setVisible(false);
 		}
     }
+    
+    public void returnLogin() {
+		loginframe.setVisible(true);
+		loginemailfield.setText("");
+		loginpwdfield.setText("");
+		//homeframe.setVisible(true);
+		//regframe.setVisible(false);
+		//genframe.setVisible(false);
+		//webframe.setVisible(false);
+    }
+
 
 	public void actionPerformed(ActionEvent e) {
 		String s = e.getActionCommand();
+		
+		if(s.equals("Add New Websites")) {
+			newcred = true;
+			if(user.getUserWebsites()) {
+	    		websuppwebsiteslist.removeAllItems();
+				for(String str:websuppwebsitesarr) {
+					websuppwebsiteslist.addItem(str);
+				}
+			}
+			//loginframe.setVisible(false);
+			homeframe.setVisible(true);
+			//regframe.setVisible(false);
+			//genframe.setVisible(false);
+			webframe.setVisible(true);
+			//recovframe.setVisible(false);
+		}
+		
+		
+		if(s.equals("Edit")) {
+			newcred = false;
+			websuppwebsiteslist.removeAllItems();
+			websuppwebsiteslist.addItem(homewebsite);
+			webemailfield.setText(user.userWebsites.get(homewebsite).websiteCredentials.get("username"));
+			webpwdfield.setText(user.userWebsites.get(homewebsite).websiteCredentials.get("password"));
+			//loginframe.setVisible(false);
+			//homeframe.setVisible(false);
+			//regframe.setVisible(false);
+			//genframe.setVisible(false);
+			webframe.setVisible(true);
+			//recovframe.setVisible(false);
+		}
+		
+		
+		if(s.equals("Forgot My Password")) {
+			//user.getUserWebsites(); might need this since i usually get websties on loginb
+			//if(user.getUserWebsites()) {
+				//recovquestionlabel.setText(user.userWebsites.get);   have to get 
+			//}
+			
+			
+			//step 1 is getting users security question based off their emails
+			//step 2 
+			
+			//loginframe.setVisible(false);
+			//homeframe.setVisible(false);
+			//regframe.setVisible(false);
+			//genframe.setVisible(false);
+			//webframe.setVisible(false);
+			
+			recovframe.setVisible(true);
+		}
+		
+		
+		if(s.equals("Generate")) {
+			if(!(genlenfield.getText().equals(""))) {
+				String regex = "[0-9]+";
+				Pattern p = Pattern.compile(regex);
+				Matcher m = p.matcher(genlenfield.getText());
+				if(m.matches()) {
+					String regex2 = "[$&+,:;=\\\\\\\\?@#|/'<>.^*()%!-]+";
+					Pattern p2 = Pattern.compile(regex2);
+					Matcher m2 = p2.matcher(genspecialfield.getText());
+					if(m2.matches() || genspecialfield.getText().equals("")) {
+						int i=Integer.parseInt(genlenfield.getText());  
+						if(i>=8 && i<=20) {
+							genpwdfield.setText(user.generatePassword(i, genspecialfield.getText()));
+							//String myString = "This text will be copied into clipboard";
+							StringSelection stringSelection = new StringSelection(genpwdfield.getText());
+							Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+							clipboard.setContents(stringSelection, null);
+							JOptionPane.showMessageDialog(genframe,"The generated password has been copied to the keyboard");
+						}
+						else {
+							JOptionPane.showMessageDialog(genframe,"Password Length can only contain a number between 8 and 20, inclusive");
+						}
+					}
+					else {
+						JOptionPane.showMessageDialog(genframe,"List of Special Characters can only contain special characters");
+					}
+				}
+				else {
+					JOptionPane.showMessageDialog(genframe,"Password Length field must only contain numbers"); 
+				}
+			}
+			else {
+				JOptionPane.showMessageDialog(genframe,"Password Length field must be non-empty before submitting");
+			}
+		}
+		
+		
+		if(s.equals("Generate Password")) {
+			returnHome();
+			genframe.setVisible(true);
+		}
+		
+		
 		if(s.equals("Login")) {
 			if(user.loginUser(loginemailfield.getText(),loginpwdfield.getText())) {
+				loginframe.setVisible(false);
 				returnHome();
 			}
 			else {
@@ -588,171 +752,30 @@ public class App extends JFrame implements ActionListener, ItemListener
 		}
 		
 		
+		if(s.equals("Logout")) {
+			// ************************return to login label
+			//loginframe.setVisible(true);
+			homeframe.setVisible(false);
+			//regframe.setVisible(false);
+			//genframe.setVisible(false);
+			//webframe.setVisible(false);
+			//recovframe.setVisible(false);
+			//loginemailfield.setText("");
+			//loginpwdfield.setText("");
+			returnLogin();
+			//********************************************************************logout function integration
+		}
+		
+		
 		if(s.equals("Register")) {
 			loginframe.setVisible(false);
-			homeframe.setVisible(false);
+			//homeframe.setVisible(false);
 			regframe.setVisible(true);
-			genframe.setVisible(false);
-			webframe.setVisible(false);
-			recovframe.setVisible(false);
+			//genframe.setVisible(false);
+			//webframe.setVisible(false);
+			//recovframe.setVisible(false);
 		}
 		
-		/*if(s.equals("Forgot My Password")) {
-			//user.getUserWebsites(); might need this since i usually get websties on loginb
-			//if(user.getUserWebsites()) {
-				//recovquestionlabel.setText(user.userWebsites.get);   have to get 
-			//}
-			loginframe.setVisible(false);
-			homeframe.setVisible(false);
-			regframe.setVisible(false);
-			genframe.setVisible(false);
-			webframe.setVisible(false);
-			recovframe.setVisible(true);
-		}*/
-		
-		if(s.equals("Sign Up")) {
-			String password = regpwdfield.getText();
-			String confirmpassword = regconfirmpwdfield.getText();
-			if(password.equals(confirmpassword)) {
-				String regex = "^(?=.*[0-9])" + "(?=.*[a-z])(?=.*[A-Z])" + "(?=.*[!@#$%^&+=])" + "(?=\\S+$).{8,20}$";
-				Pattern p = Pattern.compile(regex);
-				Matcher m = p.matcher(password);
-			
-				if(!(regemailfield.getText().equals("") || password.equals("") && reganswerfield.getText().equals("") || reganswerfield.getText().equals(""))) {
-					
-					if(m.matches()) {
-						if(user.registerUser(regemailfield.getText(), password, (String) regquestionlist.getSelectedItem(), reganswerfield.getText())) {
-							loginframe.setVisible(true);
-							homeframe.setVisible(false);
-							regframe.setVisible(false);
-							genframe.setVisible(false);
-							webframe.setVisible(false);
-							recovframe.setVisible(false);
-						}
-						else {
-							JOptionPane.showMessageDialog(regframe,"Registration Failed:" + user.response.get("message"));
-						}
-					}
-					else {
-						JOptionPane.showMessageDialog(regframe,"Please enter a password that adheres to the following requirements:\n"
-							+ "-at least 8 characters and at most 20 characters\n"
-							+ "-at least one number\n"
-							+ "-at least one upper case letter\n"
-							+ "-at least one lower case letter\n"
-							+ "-no whitespace\n"
-							+ "-and at least one special character which includes !@#$%&*()-+=^ ");
-					}
-				}
-				else {
-					JOptionPane.showMessageDialog(regframe,"All fields must be non-empty before submitting");
-				}
-			}
-			else {
-				JOptionPane.showMessageDialog(regframe,"Passwords do not match");
-			}
-		}
-		
-		
-		/*if(s.equals("open my.hofstra.edu")) {
-			System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
-			ChromeOptions options = new ChromeOptions();
-			options.setExperimentalOption("excludeSwitches",Collections.singletonList("enable-automation"));    
-			WebDriver driver = new ChromeDriver(options);
-			driver.manage().window().maximize();
-			driver.get("https://my.hofstra.edu");
-    	
-			WebElement webusername=driver.findElement(By.id("username"));
-			WebElement webpassword=driver.findElement(By.id("password"));
-			WebElement weblogin=driver.findElement(By.name("submit"));
-    	
-			//need someone to get these from get website credentials method
-			webusername.sendKeys(""); //hofstra id goes here
-			webpassword.sendKeys(""); //hofstra password goes here
-			weblogin.click();
-		}*/
-		
-		if(s.equals("Generate Password")) {
-			returnHome();
-			genframe.setVisible(true);
-		}
-		
-		if(s.equals("Generate")) {
-			if(!(genlenfield.getText().equals("") || genspecialfield.getText().equals(""))) {
-				String regex = "[0-9]+";
-				Pattern p = Pattern.compile(regex);
-				Matcher m = p.matcher(genlenfield.getText());
-				if(m.matches()) {
-					String regex2 = "[$&+,:;=\\\\\\\\?@#|/'<>.^*()%!-]+";
-					Pattern p2 = Pattern.compile(regex2);
-					Matcher m2 = p2.matcher(genspecialfield.getText());
-					if(m2.matches()) {
-						int i=Integer.parseInt(genlenfield.getText());  
-						if(i>=1 && i<=20) {
-							//genpwdfield.setText(output from generate function);
-						}
-						else {
-							JOptionPane.showMessageDialog(genframe,"Password Length can only contain a number between 1 and 20, inclusive");
-						}
-					}
-					else {
-						JOptionPane.showMessageDialog(genframe,"List of Special Characters can only contain special characters");
-					}
-				}
-				else {
-					JOptionPane.showMessageDialog(genframe,"Password Length field must only contain numbers"); 
-				}
-			}
-			else {
-				JOptionPane.showMessageDialog(genframe,"All fields must be non-empty before submitting");
-			}
-		}
-		
-		if(s.equals("Visit")) {     //THIS DOESNT WORK WITH AMAZON YET
-			System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
-			ChromeOptions options = new ChromeOptions();
-			options.setExperimentalOption("excludeSwitches",Collections.singletonList("enable-automation"));    
-			WebDriver driver = new ChromeDriver(options);
-			driver.manage().window().maximize();
-			driver.get("https://my.hofstra.edu");           
-    	
-			WebElement webusername=driver.findElement(By.id("username"));
-			WebElement webpassword=driver.findElement(By.id("password"));
-			WebElement weblogin=driver.findElement(By.name("submit"));
-    	
-			webusername.sendKeys(user.userWebsites.get(homewebsite).websiteCredentials.get("username")); 
-			webpassword.sendKeys(user.userWebsites.get(homewebsite).websiteCredentials.get("password")); 
-			weblogin.click();
-		}
-		
-		if(s.equals("Edit")) {
-			newcred = false;
-			websuppwebsiteslist.removeAllItems();
-			websuppwebsiteslist.addItem(homewebsite);
-			webemailfield.setText(user.userWebsites.get(homewebsite).websiteCredentials.get("username"));
-			webpwdfield.setText(user.userWebsites.get(homewebsite).websiteCredentials.get("password"));
-			loginframe.setVisible(false);
-			homeframe.setVisible(false);
-			regframe.setVisible(false);
-			genframe.setVisible(false);
-			webframe.setVisible(true);
-			recovframe.setVisible(false);
-		}
-		
-		if(s.equals("Add New Websites")) {
-			newcred = true;
-			if(user.getUserWebsites()) {
-	    		websuppwebsiteslist.removeAllItems();
-				for(String str:websuppwebsitesarr) {
-					websuppwebsiteslist.addItem(str);
-				}
-			}
-			loginframe.setVisible(false);
-			homeframe.setVisible(true);
-			regframe.setVisible(false);
-			genframe.setVisible(false);
-			webframe.setVisible(true);
-			recovframe.setVisible(false);
-		}
 		
 		if(s.equals("Save")) {
 			if(user.userWebsites.keySet().contains(webwebsite)) {
@@ -782,6 +805,7 @@ public class App extends JFrame implements ActionListener, ItemListener
 					entry.websiteCredentials = creds;
 					user.updateWebsiteCredentials(entry);
 				}
+				webframe.setVisible(false);
 				returnHome();
 				webemailfield.setText("");
 				webpwdfield.setText("");
@@ -792,18 +816,57 @@ public class App extends JFrame implements ActionListener, ItemListener
 			
 		}
 		
-		if(s.equals("Logout")) {
-			loginframe.setVisible(true);
-			homeframe.setVisible(false);
-			regframe.setVisible(false);
-			genframe.setVisible(false);
-			webframe.setVisible(false);
-			recovframe.setVisible(false);
-			loginemailfield.setText("");
-			loginpwdfield.setText("");
+		
+		if(s.equals("Sign Up")) {
+			String password = regpwdfield.getText();
+			String confirmpassword = regconfirmpwdfield.getText();
+			if(password.equals(confirmpassword)) {
+				String regex = "^(?=.*[0-9])" + "(?=.*[a-z])(?=.*[A-Z])" + "(?=.*[!@#$%^&+=])" + "(?=\\S+$).{8,20}$";
+				Pattern p = Pattern.compile(regex);
+				Matcher m = p.matcher(password);
+			
+				if(!(regemailfield.getText().equals("") || password.equals("") && reganswerfield.getText().equals("") || reganswerfield.getText().equals(""))) {
+					
+					if(m.matches()) {
+						if(user.registerUser(regemailfield.getText(), password, (String) regquestionlist.getSelectedItem(), reganswerfield.getText())) {
+							/*loginframe.setVisible(true);
+							homeframe.setVisible(false);
+							regframe.setVisible(false);
+							genframe.setVisible(false);
+							webframe.setVisible(false);
+							recovframe.setVisible(false);*/
+							regframe.setVisible(false);
+							returnLogin();
+						}
+						else {
+							JOptionPane.showMessageDialog(regframe,"Registration Failed:" + user.response.get("message"));
+						}
+					}
+					else {
+						JOptionPane.showMessageDialog(regframe,"Please enter a password that adheres to the following requirements:\n"
+							+ "-at least 8 characters and at most 20 characters\n"
+							+ "-at least one number\n"
+							+ "-at least one upper case letter\n"
+							+ "-at least one lower case letter\n"
+							+ "-no whitespace\n"
+							+ "-and at least one special character which includes !@#$%&*()-+=^ ");
+					}
+				}
+				else {
+					JOptionPane.showMessageDialog(regframe,"All fields must be non-empty before submitting");
+				}
+			}
+			else {
+				JOptionPane.showMessageDialog(regframe,"Passwords do not match");
+			}
 		}
 		
+		
 		if(s.equals("Submit")) {
+			//return to login screen wipe credentials ******************************************************
+			recovframe.setVisible(false);
+			resetframe.setVisible(true);
+			
 			/*loginframe.setVisible(true);
 			homeframe.setVisible(false);
 			regframe.setVisible(false);
@@ -811,6 +874,25 @@ public class App extends JFrame implements ActionListener, ItemListener
 			webframe.setVisible(false);
 			recovframe.setVisible(false);*/
 		}
+		
+		
+		if(s.equals("Update Password")) {
+			resetframe.setVisible(false);
+			returnLogin();
+		}
+		
+		
+		if(s.equals("Visit")) {
+			WebsiteLoader web = new WebsiteLoader();
+			//user.userWebsites.get(homewebsite)    pass this to loader *****************************************
+			if(homewebsite.equals("Amazon")) {
+				web.loadAmazonWebsite(user.userWebsites.get(homewebsite).websiteCredentials.get("username"), user.userWebsites.get(homewebsite).websiteCredentials.get("password"));
+			}
+			else if(homewebsite.equals("Hofstra Portal")) {
+				web.loadHofstraWebsite(user.userWebsites.get(homewebsite).websiteCredentials.get("username"), user.userWebsites.get(homewebsite).websiteCredentials.get("password"));
+			}
+		}
+		
 	}
 
 	
