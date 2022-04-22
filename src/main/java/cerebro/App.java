@@ -55,45 +55,18 @@ public class App extends JFrame implements ActionListener, ItemListener
 	static JTextField genpwdfield;
 	
 	
-	
-	//add new website page variables
-	//label up top
 	static JFrame webframe;
 	static JLabel websitelabel;
-	//static JTextField websitefield;
 	static JComboBox websuppwebsiteslist;
 	static String websuppwebsitesarr[] = {"Hofstra Portal","Amazon"};
 	static JLabel webemaillabel;
 	static JTextField webemailfield;
 	static JLabel webpwdlabel;
 	static JTextField webpwdfield;
-	//label and field additional field???
 	static JButton websavebutton;
 	static boolean newcred = true;
 	
 	
-	
-	//adv add new website page variables
-	//label up top
-	/*static JFrame advframe;
-	static JLabel advsitelabel;
-	static JTextField advsitefield;
-	static JLabel advemaillabel;
-	static JTextField advemailfield;
-	static JLabel advemailidlabel;
-	static JTextField advemailidfield;
-	static JLabel advpwdlabel;
-	static JTextField advpwdfield;
-	static JLabel advpwdidlabel;
-	static JTextField advpwdidfield;
-	static JLabel advsubidlabel;
-	static JTextField advsubmidfield;
-	static JButton advsavebutton;*/
-	
-	
-	
-	//registration page variables
-	//add register label up top
 	static JFrame regframe;
 	static JLabel regemaillabel;
 	static JTextField regemailfield;
@@ -106,15 +79,9 @@ public class App extends JFrame implements ActionListener, ItemListener
 	static JButton regsubmitbutton;
 	
 	
-	
-	//recovery page variables
-	//label up top
 	static JFrame recovframe;
 	static JLabel recovquestionlabel;
 	static JTextField recovquestionfield;
-	//static JButton recovgenbutton;
-	//static JLabel recovtokenlabel;
-	//static JTextField recovtokenfield;
 	static JButton recovsubmitbutton;
 	static JLabel recovpasswordlabel;
 	
@@ -131,6 +98,7 @@ public class App extends JFrame implements ActionListener, ItemListener
 	static String question;
 	static String homewebsite;
 	static String webwebsite;
+	static String recovemail;
 	
 	static UserSession user = new UserSession();
 	
@@ -151,25 +119,20 @@ public class App extends JFrame implements ActionListener, ItemListener
     	loginsubmitbutton.addActionListener(a);
     	loginregisterbutton.addActionListener(a);
     	loginpasswordbutton.addActionListener(a);
-    	//hofstrabutton.addActionListener(a);
     	regsubmitbutton.addActionListener(a);
     	genpwdbutton.addActionListener(a);
     	addnewsitesbutton.addActionListener(a);
-    	//advancedbutton.addActionListener(a);
     	logoutbutton.addActionListener(a);
     	visitbutton.addActionListener(a);
     	editbutton.addActionListener(a);
     	generatebutton.addActionListener(a);
     	websavebutton.addActionListener(a);
-    	//advsavebutton.addActionListener(a);
-    	//recovgenbutton.addActionListener(a);
     	recovsubmitbutton.addActionListener(a);
     	resetpwdbutton.addActionListener(a);
     	
     	regquestionlist.addItemListener(a);
     	websiteslist.addItemListener(a);
     	websuppwebsiteslist.addItemListener(a);
-    	//regquestionlist.addItemListener(a);
     	
     	
     	
@@ -204,10 +167,10 @@ public class App extends JFrame implements ActionListener, ItemListener
     	webframe.setSize(600,400);
     	webframe.setLayout(new GridLayout(2,3));
     	recovframe = new JFrame();
-    	recovframe.setSize(600,400);
+    	recovframe.setSize(550,300);
     	recovframe.setLayout(new GridLayout(2,2));
     	resetframe = new JFrame();
-    	resetframe.setSize(600,400);
+    	resetframe.setSize(550,300);
     	resetframe.setLayout(new GridLayout(2,2));
     	
     	
@@ -275,14 +238,11 @@ public class App extends JFrame implements ActionListener, ItemListener
     	homelayout.setAutoCreateGaps(true);
     	homelayout.setAutoCreateContainerGaps(true);
     	
-    	//hofstrabutton = new JButton("open my.hofstra.edu"); //make uppercase
+    	
     	genpwdbutton = new JButton("Generate Password");
     	addnewsitesbutton = new JButton("Add New Websites");
-    	//advancedbutton = new JButton("Advanced");
     	logoutbutton = new JButton("Logout");
     	homespacinglabel = new JLabel("");
-    	//String websiteslistarr[] = {"my.hofstra.edu","www.amazon.com"};
-    	//String websiteslistarr[] = {};
     	websiteslist = new JComboBox(websiteslistarr);
     	visitbutton = new JButton("Visit");
     	editbutton = new JButton("Edit");
@@ -343,10 +303,6 @@ public class App extends JFrame implements ActionListener, ItemListener
     	genlayout.setAutoCreateContainerGaps(true);
     	genlenlabel = new JLabel("Password Length");
     	genlenfield = new JTextField(32);
-    	//genupperlabel = new JLabel("Min. Number of Uppercase");
-    	//genupperfield = new JTextField(32);
-    	//genlowerlabel = new JLabel("Min. Number of Lowercase");
-    	//genlowerfield = new JTextField(32);
     	genspeciallabel = new JLabel("<html>List of Permitted Special Characters<br/> Ex. !@#$%^&*()<br/> Leave this field blank to generate password <br/> with default special characters</html>");
     	genspecialfield = new JTextField(32);
     	generatebutton = new JButton("Generate");
@@ -356,15 +312,11 @@ public class App extends JFrame implements ActionListener, ItemListener
     	genlayout.setHorizontalGroup(genlayout.createSequentialGroup()
     			.addGroup(genlayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
     					.addComponent(genlenlabel)
-    					//.addComponent(genupperlabel)
-    					//.addComponent(genlowerlabel)
     					.addComponent(genspeciallabel)
     					.addComponent(generatebutton)
     			)
     			.addGroup(genlayout.createParallelGroup(GroupLayout.Alignment.LEADING)
     					.addComponent(genlenfield)
-    					//.addComponent(genupperfield)
-    					//.addComponent(genlowerfield)
     					.addComponent(genspecialfield)
     					.addComponent(genpwdfield)
     			)
@@ -375,14 +327,6 @@ public class App extends JFrame implements ActionListener, ItemListener
     					.addComponent(genlenlabel)
     					.addComponent(genlenfield)
     			)
-    			/*.addGroup(genlayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-    					.addComponent(genupperlabel)
-    					.addComponent(genupperfield)
-    			)
-    			.addGroup(genlayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-    					.addComponent(genlowerlabel)
-    					.addComponent(genlowerfield)
-    			)*/
     			.addGroup(genlayout.createParallelGroup(GroupLayout.Alignment.LEADING)
     					.addComponent(genspeciallabel)
     					.addComponent(genspecialfield)
@@ -408,13 +352,11 @@ public class App extends JFrame implements ActionListener, ItemListener
     	weblayout.setAutoCreateGaps(true);
     	weblayout.setAutoCreateContainerGaps(true);
     	websitelabel = new JLabel("Website Name");
-    	//websitefield = new JTextField(32);
     	websuppwebsiteslist = new JComboBox(websuppwebsitesarr);
     	webemaillabel = new JLabel("Username/Email");
     	webemailfield = new JTextField(32);
     	webpwdlabel = new JLabel("Password");
     	webpwdfield = new JPasswordField(20);
-    	//label and field additional field???
     	websavebutton = new JButton("Save");
     	
     	weblayout.setHorizontalGroup(weblayout.createSequentialGroup()
@@ -468,16 +410,18 @@ public class App extends JFrame implements ActionListener, ItemListener
 		recovquestionlabel = new JLabel(""); 
 		recovquestionfield = new JTextField(32);;
 		recovsubmitbutton = new JButton("Submit");
-		recovpasswordlabel = new JLabel("");
+		//recovpasswordlabel = new JLabel("");
     	
     	recovlayout.setHorizontalGroup(recovlayout.createSequentialGroup()
     			.addGroup(recovlayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
     					.addComponent(recovquestionlabel)
-    					.addComponent(recovsubmitbutton)
+    					//.addComponent(recovsubmitbutton)
     			)
+    			
     			.addGroup(recovlayout.createParallelGroup(GroupLayout.Alignment.LEADING)
     					.addComponent(recovquestionfield)
-    					.addComponent(recovpasswordlabel)	
+    					//.addComponent(recovpasswordlabel)	
+    					.addComponent(recovsubmitbutton)
     			)
     	);
     	
@@ -488,7 +432,7 @@ public class App extends JFrame implements ActionListener, ItemListener
     			)
     			.addGroup(recovlayout.createParallelGroup(GroupLayout.Alignment.LEADING)
     					.addComponent(recovsubmitbutton)
-    					.addComponent(recovpasswordlabel)
+    					//.addComponent(recovpasswordlabel)
     			)
     	); 
     	recovcontrolpanel.setLayout(recovlayout);
@@ -510,9 +454,9 @@ public class App extends JFrame implements ActionListener, ItemListener
     	
     	
 		resetpwdlabel = new JLabel("Password"); 
-		resetpwdfield = new JTextField(32);
+		resetpwdfield = new JPasswordField(20);
 		resetconfirmpwdlabel = new JLabel("Confirm Password");
-		resetconfirmpwdfield = new JTextField(32);
+		resetconfirmpwdfield = new JPasswordField(20);
 		resetpwdbutton = new JButton("Update Password");
 		
     	
@@ -617,11 +561,7 @@ public class App extends JFrame implements ActionListener, ItemListener
 			for(String str:user.userWebsites.keySet()) {
 				websiteslist.addItem(str);
 			}
-			//loginframe.setVisible(false);
 			homeframe.setVisible(true);
-			//regframe.setVisible(false);
-			//genframe.setVisible(false);
-			//webframe.setVisible(false);
 		}
     }
     
@@ -629,10 +569,6 @@ public class App extends JFrame implements ActionListener, ItemListener
 		loginframe.setVisible(true);
 		loginemailfield.setText("");
 		loginpwdfield.setText("");
-		//homeframe.setVisible(true);
-		//regframe.setVisible(false);
-		//genframe.setVisible(false);
-		//webframe.setVisible(false);
     }
 
 
@@ -647,12 +583,8 @@ public class App extends JFrame implements ActionListener, ItemListener
 					websuppwebsiteslist.addItem(str);
 				}
 			}
-			//loginframe.setVisible(false);
 			homeframe.setVisible(true);
-			//regframe.setVisible(false);
-			//genframe.setVisible(false);
 			webframe.setVisible(true);
-			//recovframe.setVisible(false);
 		}
 		
 		
@@ -662,12 +594,7 @@ public class App extends JFrame implements ActionListener, ItemListener
 			websuppwebsiteslist.addItem(homewebsite);
 			webemailfield.setText(user.userWebsites.get(homewebsite).websiteCredentials.get("username"));
 			webpwdfield.setText(user.userWebsites.get(homewebsite).websiteCredentials.get("password"));
-			//loginframe.setVisible(false);
-			//homeframe.setVisible(false);
-			//regframe.setVisible(false);
-			//genframe.setVisible(false);
 			webframe.setVisible(true);
-			//recovframe.setVisible(false);
 		}
 		
 		
@@ -679,15 +606,17 @@ public class App extends JFrame implements ActionListener, ItemListener
 			
 			
 			//step 1 is getting users security question based off their emails
-			//step 2 
+			//step 2
 			
-			//loginframe.setVisible(false);
-			//homeframe.setVisible(false);
-			//regframe.setVisible(false);
-			//genframe.setVisible(false);
-			//webframe.setVisible(false);
 			
-			recovframe.setVisible(true);
+			if(loginemailfield.getText().equals("")) {
+				JOptionPane.showMessageDialog(loginframe,"Please fill out email field to reset password");
+			}
+			else {
+				recovemail = loginemailfield.getText();
+				recovquestionlabel.setText(user.getSecurityQuestion(loginemailfield.getText()));
+				recovframe.setVisible(true);
+			}
 		}
 		
 		
@@ -704,7 +633,6 @@ public class App extends JFrame implements ActionListener, ItemListener
 						int i=Integer.parseInt(genlenfield.getText());  
 						if(i>=8 && i<=20) {
 							genpwdfield.setText(user.generatePassword(i, genspecialfield.getText()));
-							//String myString = "This text will be copied into clipboard";
 							StringSelection stringSelection = new StringSelection(genpwdfield.getText());
 							Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 							clipboard.setContents(stringSelection, null);
@@ -753,27 +681,15 @@ public class App extends JFrame implements ActionListener, ItemListener
 		
 		
 		if(s.equals("Logout")) {
-			// ************************return to login label
-			//loginframe.setVisible(true);
+			user.logoutUser();
 			homeframe.setVisible(false);
-			//regframe.setVisible(false);
-			//genframe.setVisible(false);
-			//webframe.setVisible(false);
-			//recovframe.setVisible(false);
-			//loginemailfield.setText("");
-			//loginpwdfield.setText("");
 			returnLogin();
-			//********************************************************************logout function integration
 		}
 		
 		
 		if(s.equals("Register")) {
 			loginframe.setVisible(false);
-			//homeframe.setVisible(false);
 			regframe.setVisible(true);
-			//genframe.setVisible(false);
-			//webframe.setVisible(false);
-			//recovframe.setVisible(false);
 		}
 		
 		
@@ -829,12 +745,6 @@ public class App extends JFrame implements ActionListener, ItemListener
 					
 					if(m.matches()) {
 						if(user.registerUser(regemailfield.getText(), password, (String) regquestionlist.getSelectedItem(), reganswerfield.getText())) {
-							/*loginframe.setVisible(true);
-							homeframe.setVisible(false);
-							regframe.setVisible(false);
-							genframe.setVisible(false);
-							webframe.setVisible(false);
-							recovframe.setVisible(false);*/
 							regframe.setVisible(false);
 							returnLogin();
 						}
@@ -863,39 +773,65 @@ public class App extends JFrame implements ActionListener, ItemListener
 		
 		
 		if(s.equals("Submit")) {
-			//return to login screen wipe credentials ******************************************************
-			recovframe.setVisible(false);
-			resetframe.setVisible(true);
 			
-			/*loginframe.setVisible(true);
-			homeframe.setVisible(false);
-			regframe.setVisible(false);
-			genframe.setVisible(false);
-			webframe.setVisible(false);
-			recovframe.setVisible(false);*/
+			//add some way of locking out users after certain amount of failed attempts
+			if(user.verifySecurityAnswer(recovemail, recovquestionfield.getText())) {
+				recovframe.setVisible(false);
+				resetframe.setVisible(true);
+			}
+			else {
+				JOptionPane.showMessageDialog(recovframe,"Incorrect Answer");
+			}
 		}
 		
 		
 		if(s.equals("Update Password")) {
-			resetframe.setVisible(false);
-			returnLogin();
+			String password = resetpwdfield.getText();
+			String confirmpassword = resetconfirmpwdfield.getText();
+			if(password.equals("") || confirmpassword.equals("")) {
+				JOptionPane.showMessageDialog(resetframe,"Both fields must be filled out before password can be reset");
+				
+			}
+			else {
+				if(password.equals(confirmpassword)) {
+					String regex = "^(?=.*[0-9])" + "(?=.*[a-z])(?=.*[A-Z])" + "(?=.*[!@#$%^&+=])" + "(?=\\S+$).{8,20}$";
+					Pattern p = Pattern.compile(regex);
+					Matcher m = p.matcher(password);
+					
+					if(m.matches()) {
+						if(user.updateSuperpassword(confirmpassword)) {
+							JOptionPane.showMessageDialog(resetframe,"Password has been reset successfully");
+							resetframe.setVisible(false);
+							returnLogin();
+						}
+						else {
+							JOptionPane.showMessageDialog(resetframe,"Password Update Failed:" + user.response.get("message"));
+						}
+					}
+					else {
+						JOptionPane.showMessageDialog(resetframe,"Please enter a password that adheres to the following requirements:\n"
+							+ "-at least 8 characters and at most 20 characters\n"
+							+ "-at least one number\n"
+							+ "-at least one upper case letter\n"
+							+ "-at least one lower case letter\n"
+							+ "-no whitespace\n"
+							+ "-and at least one special character which includes !@#$%&*()-+=^ ");
+					}
+					
+				}
+				else {
+					JOptionPane.showMessageDialog(resetframe,"Passwords do not match");
+				}
+			}
 		}
 		
 		
 		if(s.equals("Visit")) {
 			WebsiteLoader web = new WebsiteLoader();
-			//user.userWebsites.get(homewebsite)    pass this to loader *****************************************
-			if(homewebsite.equals("Amazon")) {
-				web.loadAmazonWebsite(user.userWebsites.get(homewebsite).websiteCredentials.get("username"), user.userWebsites.get(homewebsite).websiteCredentials.get("password"));
-			}
-			else if(homewebsite.equals("Hofstra Portal")) {
-				web.loadHofstraWebsite(user.userWebsites.get(homewebsite).websiteCredentials.get("username"), user.userWebsites.get(homewebsite).websiteCredentials.get("password"));
-			}
-		}
-		
+			web.loadWebsite(user.userWebsites.get(homewebsite)); 
+		}	
 	}
 
-	
 	public void itemStateChanged(ItemEvent e) {
 		question = (String) regquestionlist.getSelectedItem();
 		homewebsite = (String) websiteslist.getSelectedItem();
