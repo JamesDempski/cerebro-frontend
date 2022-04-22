@@ -41,6 +41,7 @@ public class UserSession {
 	private String userPassword;
 	public HashMap<String, websiteEntry> userWebsites;
 	public String username;
+	private String security_answer;
 	
 	public UserSession() {
 		user_id = null;
@@ -48,6 +49,7 @@ public class UserSession {
 		userWebsites = new HashMap<String, websiteEntry>();
 		response = new HashMap<String, String>();
 		username = null;
+		security_answer = null;
 	}
 	
 	private boolean isSignedIn() {
@@ -98,6 +100,7 @@ public class UserSession {
 	public boolean registerUser(String username, String password, String security_question, String security_answer) {
 		HashMap<String, String> params = new HashMap<String, String>();
 		AppRequests request = new AppRequests();
+		AppAES encryptor = new AppAES(security_answer);//initiating encryptor with security answer as key
 		MessageDigest digest = null;
 		try {
 			digest = MessageDigest.getInstance("SHA-256");
@@ -113,10 +116,13 @@ public class UserSession {
     	hash = digest.digest(security_answer.getBytes(StandardCharsets.UTF_8));
     	String sha256qhex = new String(Hex.encode(hash));
     	
+    	String encrpass = encryptor.encrypt(password);
+    	
     	params.put("username", username);
     	params.put("public_key", sha256pwhex);
     	params.put("security_question", security_question);
     	params.put("security_answer", sha256qhex);
+    	params.put("encrypted_password", encrpass);
     	
     	try {
 			response = request.sendRequest("users/createUser.php", params);
@@ -175,9 +181,11 @@ public class UserSession {
 			System.out.println("User not signed in");
 			return false;
 		}
+		
 		HashMap<String, String> params = new HashMap<String, String>();
 		AppRequests request = new AppRequests();
     	AppAES decryptor = new AppAES(userPassword);
+    	
     	List<websiteEntry> entriesList = new ArrayList<websiteEntry>();
     	
     	params.put("user_id", user_id);
@@ -307,13 +315,20 @@ public class UserSession {
 	}
 	
 	public boolean updateSuperpassword(String newPassword) {
-		if(user_id == null) {
-			System.out.println("Missing user id");
+		if(!isSignedIn()) {
+			System.out.println("User not signed in");
 			return false;
 		}
+		
+		if(security_answer == null) {
+			System.out.println("Security question not answered");
+			return false;
+		}
+		
 		HashMap<String, String> params = new HashMap<String, String>();
 		AppRequests request = new AppRequests();
 		AppAES newEncryptor = new AppAES(newPassword);
+		AppAES pass_encryptor = new AppAES(security_answer);
 		
 		if(!getUserWebsites()) {
 			System.out.println("Unable to retreive websites");
@@ -331,9 +346,11 @@ public class UserSession {
 		
 		byte[] newHash = digest.digest(newPassword.getBytes(StandardCharsets.UTF_8));
     	String sha256hex = new String(Hex.encode(newHash));
+    	String new_encr_pass = pass_encryptor.encrypt(newPassword);
     	
 		params.put("user_id", user_id);
 		params.put("password_hash", sha256hex);
+		params.put("encrypted_password", new_encr_pass);
 		
 		try {
 			response = request.sendRequest("users/updateUserPassword.php", params);
@@ -367,6 +384,7 @@ public class UserSession {
 		    	//System.out.println("Response for " + entry.websiteName + " is: " + response);
 			}
 			userPassword = newPassword;
+			security_answer = null;
 			return true;
 		}
 		
@@ -520,7 +538,11 @@ public class UserSession {
 			return false;
 		}
 		if(response.get("code").equals("200")) {
+			AppAES decryptor = new AppAES(answer);
     		user_id = response.get("user_id");
+    		security_answer = answer;
+    		userPassword = decryptor.decrypt(response.get("encrypted_password"));
+    		//System.out.println(userPassword);
     		return true;
     	}
 		
