@@ -1,6 +1,7 @@
 package cerebro;
 
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -17,6 +18,12 @@ public class WebsiteLoader {
 					  break;
 			case "2": loadAmazonWebsite(website.websiteCredentials.get("username"), website.websiteCredentials.get("password"));
 					  break;
+			case "3": loadTwitchWebsite(website.websiteCredentials.get("username"), website.websiteCredentials.get("password"));
+			  		  break;
+			case "4": loadInstagramWebsite(website.websiteCredentials.get("username"), website.websiteCredentials.get("password"));
+	  		  		  break;
+			case "5": loadFacebookWebsite(website.websiteCredentials.get("username"), website.websiteCredentials.get("password"));
+	  		  		  break;
 				
 		}
 	}
@@ -57,5 +64,73 @@ public class WebsiteLoader {
 		
 		webinputs.sendKeys(password);
 		webbuttons.click();
+	}
+	
+	public void loadTwitchWebsite(String username, String password) {
+		System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+		ChromeOptions options = new ChromeOptions();
+		options.setExperimentalOption("excludeSwitches",Collections.singletonList("enable-automation"));    
+		WebDriver driver = new ChromeDriver(options);
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(200, TimeUnit.SECONDS);
+		
+		driver.get("https://www.twitch.tv/");
+		
+		//enter username
+		WebElement loginbutton=driver.findElement(By.cssSelector("button[data-a-target='login-button']"));
+		loginbutton.click();
+		
+		WebElement passinput=driver.findElement(By.id("password-input"));
+		WebElement userinput=driver.findElement(By.id("login-username"));
+		
+		WebElement button=driver.findElement(By.cssSelector("button[data-a-target='passport-login-button']"));
+		
+		userinput.sendKeys(username);
+		passinput.sendKeys(password);
+		button.click();
+	}
+	
+	public void loadInstagramWebsite(String username, String password) {
+		System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+		ChromeOptions options = new ChromeOptions();
+		options.setExperimentalOption("excludeSwitches",Collections.singletonList("enable-automation"));    
+		WebDriver driver = new ChromeDriver(options);
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(200, TimeUnit.SECONDS);
+		driver.get("https://www.instagram.com/");
+		
+		
+		WebElement userinput=driver.findElement(By.name("username"));
+		WebElement passinput=driver.findElement(By.name("password"));
+		
+		WebElement button=driver.findElement(By.cssSelector("button[type='submit']"));
+		
+		userinput.sendKeys(username);
+		passinput.sendKeys(password);
+		button.click();
+	}
+	
+	public void loadFacebookWebsite(String username, String password) {
+		System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+		ChromeOptions options = new ChromeOptions();
+		options.setExperimentalOption("excludeSwitches",Collections.singletonList("enable-automation"));    
+		WebDriver driver = new ChromeDriver(options);
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(50, TimeUnit.SECONDS);
+		
+		driver.get("https://www.facebook.com");
+		
+		//time.sleep(200);
+		
+		WebElement userinput=driver.findElement(By.id("email"));
+		WebElement passinput=driver.findElement(By.id("pass"));
+		WebElement button=driver.findElement(By.cssSelector("button[name='login']"));
+		
+		
+		
+		userinput.sendKeys(username);
+		passinput.sendKeys(password);
+		button.click();
+		
 	}
 }
