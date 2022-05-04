@@ -36,6 +36,7 @@ public class UserSession {
 		}
 	}
 	
+	public static HashMap<String, String> supportedWebsites; 
 	private String user_id;
 	public HashMap<String, String> response;
 	private String userPassword;
@@ -50,6 +51,7 @@ public class UserSession {
 		response = new HashMap<String, String>();
 		username = null;
 		security_answer = null;
+		supportedWebsites = getSupportedWebsites();
 	}
 	
 	private boolean isSignedIn() {
