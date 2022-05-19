@@ -58,7 +58,7 @@ public class App extends JFrame implements ActionListener, ItemListener
 	static JFrame webframe;
 	static JLabel websitelabel;
 	static JComboBox websuppwebsiteslist;
-	static String websuppwebsitesarr[] = {"Hofstra Portal","Amazon"};
+	static String websuppwebsitesarr[] = UserSession.supportedWebsites.keySet().toArray(new String[UserSession.supportedWebsites.size()]);
 	static JLabel webemaillabel;
 	static JTextField webemailfield;
 	static JLabel webpwdlabel;
@@ -137,17 +137,7 @@ public class App extends JFrame implements ActionListener, ItemListener
     	
     	
     	
-    	//user.loginUser("jamie.dempski@hofstra.edu", "Hofstra1!");
-    	//HashMap<String,String> creds = new HashMap<String,String>();
-    	//creds.put("username", "");
-    	//creds.put("password", "");
-    	//user.createUserWebsite("1",creds);
-    	//HashMap<String,String> creds2 = new HashMap<String,String>();
-    	//creds2.put("username", "");
-    	//creds2.put("password", "");
-    	//user.createUserWebsite("2",creds2);//*/
-    	
-    	//System.out.println(user.response.get("message"));
+  
     }
     
     public void showGroupLayout() {
@@ -599,15 +589,9 @@ public class App extends JFrame implements ActionListener, ItemListener
 		
 		
 		if(s.equals("Forgot My Password")) {
-			//user.getUserWebsites(); might need this since i usually get websties on loginb
-			//if(user.getUserWebsites()) {
-				//recovquestionlabel.setText(user.userWebsites.get);   have to get 
-			//}
-			
-			
-			//step 1 is getting users security question based off their emails
-			//step 2
-			
+			if(!recovquestionfield.getText().equals("")) {
+				recovquestionfield.setText("");
+			}
 			
 			if(loginemailfield.getText().equals("")) {
 				JOptionPane.showMessageDialog(loginframe,"Please fill out email field to reset password");
@@ -699,12 +683,8 @@ public class App extends JFrame implements ActionListener, ItemListener
 			}
 
 			if(!(webemailfield.getText().equals("") || webpwdfield.getText().equals(""))) {
-				String webid;
-				switch(webwebsite) {
-					case "Hofstra Portal": webid="1"; break;
-					case "Amazon": webid="2"; break;
-					default: webid="Invalid Website"; break;
-				}
+				String webid = UserSession.supportedWebsites.get(webwebsite);
+			
 				if(newcred) {
 					//create website entry
 					HashMap<String,String> creds = new HashMap<String,String>();
@@ -778,6 +758,10 @@ public class App extends JFrame implements ActionListener, ItemListener
 			if(user.verifySecurityAnswer(recovemail, recovquestionfield.getText())) {
 				recovframe.setVisible(false);
 				resetframe.setVisible(true);
+				if(!resetpwdfield.equals("")||!resetconfirmpwdfield.equals("")) {
+					resetpwdfield.setText("");
+					resetconfirmpwdfield.setText("");
+				}
 			}
 			else {
 				JOptionPane.showMessageDialog(recovframe,"Incorrect Answer");
